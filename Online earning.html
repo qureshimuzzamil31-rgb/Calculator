@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Earnify Hub - Payment Portal</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 { color: #333; }
+        input { width: 90%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #5a67d8; }
+        .error { color: red; font-size: 0.9em; }
+        .payment-message { font-weight: bold; color: #d35400; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Earnify Hub</h1>
+
+    <!-- FORM -->
+    <div id="formSection">
+        <input type="text" id="name" placeholder="Your Name"><br>
+        <span id="nameError" class="error"></span><br>
+        <input type="email" id="email" placeholder="Your Email"><br>
+        <span id="emailError" class="error"></span><br>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+    <!-- PAYMENT -->
+    <div id="paymentSection" style="display:none;">
+        <h2>Payment Instructions</h2>
+        <p class="payment-message">💰 Please pay 500 for start your journey!</p>
+        <p>Send payment to:</p>
+        <p><b>Account Number: 03700163495</b></p>
+        <button onclick="showReceiptUpload()">Next</button>
+    </div>
+
+    <!-- RECEIPT UPLOAD -->
+    <div id="receiptSection" style="display:none;">
+        <h2>Upload Payment Receipt</h2>
+        <input type="file" id="receipt"><br><br>
+        <span id="receiptError" class="error"></span><br>
+        <button onclick="submitReceipt()">Submit Receipt</button>
+    </div>
+
+    <!-- WAITING -->
+    <div id="waitingSection" style="display:none;">
+        <h2>⏳ Waiting for Confirmation</h2>
+        <p>Your payment receipt has been submitted.</p>
+        <p>Please wait while we verify your payment.</p>
+        <button onclick="simulateApproval()">Approve & Continue ✅</button>
+    </div>
+
+    <!-- APPROVED -->
+    <div id="approvedSection" style="display:none;">
+        <h2>🎉 Payment Verified!</h2>
+        <p>Welcome, <span id="userName"></span>!</p>
+        <p>Your journey has officially started.</p>
+    </div>
+
+</div>
+
+<script>
+    let userData = {};
+
+    function submitForm() {
+        let name = document.getElementById("name").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let namePattern = /^[A-Za-z ]+$/;
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        let valid = true;
+
+        // Clear previous errors
+        document.getElementById("nameError").innerText = "";
+        document.getElementById("emailError").innerText = "";
+
+        // Name Validation
+        if(name === ""){
+            document.getElementById("nameError").innerText = "Name is required!";
+            valid = false;
+        } else if(!name.match(namePattern)){
+            document.getElementById("nameError").innerText = "Name must contain only letters!";
+            valid = false;
+        }
+
+        // Email Validation
+        if(email === ""){
+            document.getElementById("emailError").innerText = "Email is required!";
+            valid = false;
+        } else if(!email.match(emailPattern)){
+            document.getElementById("emailError").innerText = "Invalid email format!";
+            valid = false;
+        }
+
+        if(valid){
+            userData.name = name;
+            userData.email = email;
+            document.getElementById("formSection").style.display = "none";
+            document.getElementById("paymentSection").style.display = "block";
+        }
+    }
+
+    function showReceiptUpload() {
+        document.getElementById("paymentSection").style.display = "none";
+        document.getElementById("receiptSection").style.display = "block";
+    }
+
+    function submitReceipt() {
+        let file = document.getElementById("receipt").files.length;
+        document.getElementById("receiptError").innerText = "";
+
+        if(file === 0){
+            document.getElementById("receiptError").innerText = "Please upload your payment receipt!";
+            return;
+        }
+
+        document.getElementById("receiptSection").style.display = "none";
+        document.getElementById("waitingSection").style.display = "block";
+    }
+
+    function simulateApproval() {
+        document.getElementById("waitingSection").style.display = "none";
+        document.getElementById("approvedSection").style.display = "block";
+        document.getElementById("userName").innerText = userData.name;
+    }
+</script>
+
+</body>
+</html>
